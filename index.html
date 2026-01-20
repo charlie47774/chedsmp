@@ -21,7 +21,7 @@
     header { text-align: center; margin-bottom: 40px; }
     h1 { font-size: 3em; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
     .subtitle { font-size: 1.2em; opacity: 0.8; }
-    .server-card { 
+    .server-card, .drive-card { 
       background: rgba(255,255,255,0.1); 
       backdrop-filter: blur(10px); 
       border-radius: 20px; 
@@ -30,8 +30,9 @@
       width: 100%; 
       box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
       transition: transform 0.3s ease; 
+      margin-bottom: 30px;
     }
-    .server-card:hover { transform: translateY(-10px); }
+    .server-card:hover, .drive-card:hover { transform: translateY(-10px); }
     .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; }
     .status-indicator { font-size: 1.5em; font-weight: bold; }
     .online { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
@@ -42,7 +43,13 @@
     .player { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 15px; margin: 5px; font-size: 0.9em; }
     .last-update { text-align: center; opacity: 0.6; font-size: 0.9em; margin-top: 20px; }
     .loading { opacity: 0.5; }
-    @media (max-width: 768px) { h1 { font-size: 2em; } .status-row { flex-direction: column; text-align: center; } }
+    a.drive-link { display: inline-block; padding: 10px 20px; background: #4ecdc4; color: #0f0f23; font-weight: bold; border-radius: 10px; text-decoration: none; transition: background 0.3s ease; }
+    a.drive-link:hover { background: #38b2ac; }
+    footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.9em; opacity: 0.7; }
+    @media (max-width: 768px) { 
+      h1 { font-size: 2em; } 
+      .status-row { flex-direction: column; text-align: center; } 
+    }
   </style>
 </head>
 <body>
@@ -69,6 +76,19 @@
     </div>
     <div class="last-update" id="last-update">Never</div>
   </div>
+
+  <!-- Google Drive Link Section -->
+  <div class="drive-card">
+    <h2>Download Map / Resources</h2>
+    <p style="text-align:center; margin:15px 0;">Access the server map and resources via Google Drive:</p>
+    <div style="text-align:center;">
+      <a class="drive-link" href="https://drive.google.com/drive/folders/1JN-4_WLP20FBimSHO0mzY1TainLGEeLU" target="_blank">Open Google Drive</a>
+    </div>
+  </div>
+
+  <footer>
+    For enquiries please contact <a href="mailto:server@chedsmp.com" style="color:#4ecdc4;">server@chedsmp.com</a>
+  </footer>
 
   <script>
     const SERVER = '51.161.216.165:25581'; // e.g., 'play.chedsmp.com:25565' or IP from panel.lilypad.gg
