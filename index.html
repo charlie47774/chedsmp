@@ -1,0 +1,116 @@
+<!-- all of this code is ai generated, i take no credit for it, its just to see my minecraft server lol. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChedSMP - Minecraft Server Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); 
+      color: #ffffff; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      padding: 20px; 
+    }
+    header { text-align: center; margin-bottom: 40px; }
+    h1 { font-size: 3em; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+    .subtitle { font-size: 1.2em; opacity: 0.8; }
+    .server-card { 
+      background: rgba(255,255,255,0.1); 
+      backdrop-filter: blur(10px); 
+      border-radius: 20px; 
+      padding: 30px; 
+      max-width: 600px; 
+      width: 100%; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+      transition: transform 0.3s ease; 
+    }
+    .server-card:hover { transform: translateY(-10px); }
+    .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .status-indicator { font-size: 1.5em; font-weight: bold; }
+    .online { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
+    .offline { color: #ff4757; text-shadow: 0 0 10px #ff4757; }
+    .server-icon { width: 64px; height: 64px; border-radius: 10px; margin-right: 20px; }
+    #motd { margin: 20px 0; font-style: italic; line-height: 1.6; }
+    .players { display: flex; justify-content: space-around; flex-wrap: wrap; }
+    .player { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 15px; margin: 5px; font-size: 0.9em; }
+    .last-update { text-align: center; opacity: 0.6; font-size: 0.9em; margin-top: 20px; }
+    .loading { opacity: 0.5; }
+    @media (max-width: 768px) { h1 { font-size: 2em; } .status-row { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ChedSMP</h1>
+    <p class="subtitle">Live Minecraft Server Status</p>
+  </header>
+  
+  <div class="server-card">
+    <div id="status" class="loading">
+      <div class="status-row">
+        <div>
+          <div class="status-indicator" id="online-status">Loading...</div>
+          <div id="version">--</div>
+        </div>
+        <img id="icon" class="server-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiM0RDQ5RkYiLz4KPHRleHQgeD0iMzIiIHk9IjM3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjRkZGIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPkxvYWRpbmc8L3RleHQ+Cjwvc3ZnPg==" alt="Server Icon">
+      </div>
+      <div id="motd">Loading server info...</div>
+      <div class="status-row">
+        <div id="players-online">Players: 0</div>
+        <div id="players-max">Max: --</div>
+      </div>
+      <div id="player-list" class="players"></div>
+    </div>
+    <div class="last-update" id="last-update">Never</div>
+  </div>
+
+  <script>
+    const SERVER = 'YOUR_SERVER_IP:PORT'; // e.g., 'play.chedsmp.com:25565' or IP from panel.lilypad.gg
+
+    async function fetchStatus() {
+      try {
+        const response = await fetch(`https://api.mcsrvstat.us/2/${SERVER}`);
+        const data = await response.json();
+        
+        document.getElementById('online-status').textContent = data.online ? '🟢 ONLINE' : '🔴 OFFLINE';
+        document.getElementById('online-status').className = data.online ? 'status-indicator online' : 'status-indicator offline';
+        document.getElementById('version').textContent = data.version || 'Unknown';
+        document.getElementById('icon').src = data.icon || '';
+        document.getElementById('motd').innerHTML = data.motd?.html || 'No MOTD';
+        document.getElementById('players-online').textContent = `Players: ${data.players?.online || 0}`;
+        document.getElementById('players-max').textContent = `Max: ${data.players?.max || '--'}`;
+        
+        const playerList = document.getElementById('player-list');
+        playerList.innerHTML = '';
+        if (data.players?.list && data.players.list.length > 0) {
+          data.players.list.slice(0, 20).forEach(player => {
+            const span = document.createElement('span');
+            span.className = 'player';
+            span.textContent = player;
+            playerList.appendChild(span);
+          });
+        } else {
+          playerList.innerHTML = '<p style="width:100%;text-align:center;opacity:0.6;">No players online</p>';
+        }
+        
+        document.getElementById('status').classList.remove('loading');
+        document.getElementById('last-update').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error('Error fetching status:', error);
+        document.getElementById('online-status').textContent = '❌ Error';
+        document.getElementById('online-status').className = 'status-indicator offline';
+      }
+    }
+
+    // Initial fetch and auto-refresh every 30 seconds
+    fetchStatus();
+    setInterval(fetchStatus, 30000);
+  </script>
+</body>
+</html>
